@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Launch Radar — pre-token protocols ranked by fitted launch value</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<a class="skip" href="#board">Skip to the board</a>
+<header class="top">
+  <div class="brand">
+    <h1>LAUNCH RADAR</h1>
+    <p class="tag">Token Radar v2 — fitted launch pricing, tested held-out and walk-forward</p>
+  </div>
+  <div class="meta" id="meta"></div>
+</header>
+
+<section class="method" id="method" aria-label="The value model">
+  <div class="mcol">
+    <h2>The model</h2>
+    <p id="model-formula"></p>
+    <p class="fine" id="model-coefs"></p>
+  </div>
+  <div class="mcol">
+    <h2>Held-out test</h2>
+    <p id="held-out"></p>
+    <p class="fine">Every 5th protocol by slug was held out; the rest trained a fresh fit.</p>
+  </div>
+  <div class="mcol">
+    <h2>Walk-forward test</h2>
+    <p id="walk-forward"></p>
+    <p class="fine">Trained on protocols listed before 2024, tested on those listed after.</p>
+  </div>
+</section>
+
+<section class="strip" id="integrity" aria-label="Integrity: every protocol accounted for"></section>
+
+<section class="kpis" id="kpis" aria-label="Board facts"></section>
+
+<nav class="controls" aria-label="Filter and sort the board">
+  <input id="q" type="search" placeholder="Search name or slug…" aria-label="Search name or slug">
+  <select id="f-cat" aria-label="Filter by category"><option value="">All categories</option></select>
+  <select id="f-chain" aria-label="Filter by chain"><option value="">All chains</option></select>
+  <select id="f-verdict" aria-label="Filter by verdict">
+    <option value="">All verdicts</option>
+    <option value="FARM">FARM</option>
+    <option value="THIN">THIN</option>
+    <option value="SKIP">SKIP</option>
+  </select>
+  <label class="check"><input id="f-watch" type="checkbox"> Watchlist only</label>
+  <select id="sort" aria-label="Sort the board">
+    <option value="rank">Sort: rank</option>
+    <option value="value">Sort: implied value</option>
+    <option value="tvl">Sort: TVL</option>
+    <option value="growth">Sort: 7-day growth</option>
+    <option value="age">Sort: age</option>
+    <option value="cost">Sort: farm cost</option>
+  </select>
+  <span class="count" id="count"></span>
+</nav>
+
+<main>
+  <table id="board" aria-label="Ranked board of pre-token protocols">
+    <thead><tr>
+      <th>#</th><th>Protocol</th><th>Category</th><th>Chains</th>
+      <th class="num">TVL</th><th class="num">7d</th><th class="num">Age</th>
+      <th class="num">Implied launch value</th><th>Verdict</th><th class="num">Farm cost</th>
+    </tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <p class="hint">Click any row for its detail view: model breakdown, value band and costed farm plan.</p>
+
+  <section id="detail" class="detail" hidden aria-label="Protocol detail"></section>
+
+  <section class="live" aria-label="Live tokens: the market vs the model">
+    <h2>Live tokens — what the market says vs what the model says</h2>
+    <p class="fine">The 24 largest tokenised protocols by market cap. The model was fitted on protocols
+    like these; the gap between its prediction and the real market cap is the honest error the
+    value bands above are built from. A prediction is not a price target.</p>
+    <table>
+      <thead><tr><th>Protocol</th><th>Category</th><th class="num">TVL</th>
+      <th class="num">Real market cap</th><th class="num">Model prediction</th><th class="num">Actual / predicted</th></tr></thead>
+      <tbody id="live-rows"></tbody>
+    </table>
+  </section>
+
+  <section class="notes" aria-label="Method and honesty notes">
+    <h2>How to read this board</h2>
+    <ul>
+      <li><b>Implied value</b> is this entry's own claim about what a launch would be worth if the
+      protocol's record stayed as it is. It does not predict whether or when a token is issued.</li>
+      <li><b>Records no token</b> is DefiLlama's record, never proof a protocol has no token. A
+      protocol on the watchlist may still have a token its DefiLlama record does not carry.</li>
+      <li><b>The value band</b> on each row is ±1 walk-forward log-RMSE — about ×8 either way. The
+      typical miss is large; the band says so in plain numbers instead of hiding it.</li>
+      <li><b>Verdicts</b> are by implied value within this board: FARM is the top decile, THIN the
+      next 40%, SKIP the rest — and any protocol bleeding 40% or more of TVL in a week is SKIP
+      whatever its value, because the capital is leaving.</li>
+      <li><b>Farm cost</b> is the all-in cost of the plan: the capital in the position plus the gas
+      to set it up and to act weekly while it is held. The break-even line in each detail view
+      assumes, only as an assumption, that 5% of supply goes to farmers.</li>
+      <li><b>Set aside, not hidden:</b> protocols above the $50M floor that the house rule leaves
+      out are wrapped, staked or bridged products of tokens that trade; protocols below the floor
+      that fail the rule are exchanges, versioned pools or the same kind of product. They are
+      counted in the strip above, with the reason.</li>
+    </ul>
+    <p class="fine" id="source-line"></p>
+  </section>
+</main>
+<script src="model.js"></script>
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
